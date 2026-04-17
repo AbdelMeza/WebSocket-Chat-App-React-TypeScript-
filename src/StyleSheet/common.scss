@@ -1,0 +1,55 @@
+/**
+ * Replaced @import with @use for better encapsulation.
+ * This follows the Dart Sass 1.80+ deprecation roadmap for Sass 3.0.
+ */
+
+@use "theme" as t;
+@use "config" as c;
+
+@font-face {
+  font-family: "font-regular";
+  src: url("../../Font/main-font-regular.otf");
+}
+
+@font-face {
+  font-family: "font-bold";
+  src: url("../../Font/main-font-bold.otf");
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: t.$bg-color-shade-100;
+}
+
+*, ::before, ::after {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  list-style: none;
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+  font-family: "font-regular";
+  font-size: c.$fontsize-2;
+  font-weight: 500;
+  transition:
+    background-color c.$transition-1,
+    color c.$transition-1,
+    border-color c.$transition-1;
+}
+
+html {
+  font-size: clamp(12px, 3vw, 16px);
+}
+
+input {
+  color: t.$text-color-shade-100;
+}
+
+svg {
+  color: t.$text-color-shade-100;
+}

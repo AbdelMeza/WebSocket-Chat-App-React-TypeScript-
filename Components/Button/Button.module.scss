@@ -1,0 +1,25 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.mainButton {
+  cursor: pointer;
+  border-radius: c.$radius-2;
+  width: 100%;
+
+  &.disabled {
+    opacity: 0.8;
+  }
+}
+
+.buttonType-main {
+  background-color: t.$main-color;
+  color: #fff;
+}
+
+.buttonSize-1 {
+  height: c.$height-1;
+}
+
+.buttonSize-2 {
+  height: c.$height-2;
+}

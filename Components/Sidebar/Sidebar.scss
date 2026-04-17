@@ -1,0 +1,72 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.side-bar {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  width: 60px;
+  height: 100vh;
+  border-right: 1px solid t.$bg-color-shade-300;
+  background-color: t.$bg-color-shade-200;
+
+  .content {
+    @include c.flex-center;
+    flex-direction: column;
+    gap: c.$space-2;
+    padding: c.$space-2 0;
+
+    &.upper-content {
+      position: relative;
+      padding: c.$space-3 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 1px;
+        width: 60%;
+        background-color: t.$bg-color-shade-300;
+      }
+    }
+
+    &.lower-content .theme-switcher {
+      cursor: pointer;
+      aspect-ratio: 1;
+      height: 40px;
+      border-radius: c.$radius-1;
+      @include c.flex-center;
+      user-select: none;
+
+      @include c.hover-highlight;
+
+      &:active {
+        scale: 0.9;
+      }
+    }
+
+    .nav-item {
+      @include c.flex-center;
+      color: t.$text-color-shade-100;
+      border-radius: c.$radius-1;
+      transition: c.$transition-1;
+      aspect-ratio: 1;
+      height: 40px;
+
+      &:active {
+        @include c.hover-highlight;
+        scale: 0.9;
+      }
+
+      &:not(.active) {
+        @include c.hover-highlight;
+      }
+    }
+
+    svg {
+      width: 24px;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+@use "theme" as t;
+
+// Spacing scale
+$space-1: clamp(8px, 2vw, 10px);
+$space-2: calc(#{$space-1} * 1.618);
+$space-3: calc(#{$space-2} * 1.618);
+$space-4: calc(#{$space-3} * 1.618);
+
+// Border radius scale
+$radius-1: clamp(9px, 1.5vw, 12px);
+$radius-2: calc(#{$radius-1} * 1.618);
+$radius-3: calc(#{$radius-2} * 1.618);
+
+// Heigth
+$height-1: clamp(40px, 4vw, 45px);
+$height-2: clamp(55px, 2vw, 60px);
+
+//Font size
+$fontsize-1: 0.7rem;
+$fontsize-2: 1rem;
+$fontsize-3: 1.2rem;
+
+//Transition
+$transition-1: 0.1s ease-in-out;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin hover-highlight {
+  [data-theme="light"] &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: t.$text-color-shade-100;
+  }
+
+  [data-theme="dark"] &:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    color: t.$text-color-shade-100;
+  }
+}

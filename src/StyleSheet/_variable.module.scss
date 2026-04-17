@@ -1,0 +1,29 @@
+@use "./config" as c;
+@use "./theme" as t;
+
+.fontBold {
+  font-family: "font-bold";
+}
+
+.pad1 {
+  padding: c.$space-1;
+}.pad2 {
+  padding: c.$space-2;
+}.pad3 {
+  padding: c.$space-3;
+}
+
+.radius1 {
+  border-radius: c.$radius-1;
+}.radius2 {
+  border-radius: c.$radius-2;
+}.radius3 {
+  border-radius: c.$radius-3;
+}
+
+.height1 {
+  height: c.$height-1;
+}.height2 {
+  height: c.$height-2;
+}
+

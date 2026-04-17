@@ -1,0 +1,41 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.conversations-container {
+  display: flex;
+
+  .side-content.right-content {
+    flex: 1;
+  }
+}
+
+.conversations-neutral-page {
+  @include c.flex-center;
+  height: 100vh;
+  flex: 1;
+  background-color: t.$bg-color-shade-200;
+
+  .content {
+    @include c.flex-center;
+    flex-direction: column;
+    gap: c.$space-1;
+
+    .icon-container {
+      @include c.flex-center;
+      aspect-ratio: 1;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px solid t.$text-color-shade-100;
+      margin-bottom: c.$space-2;
+    }
+
+    .upper-text{
+      color: t.$text-color-shade-100;
+    }
+
+    .lower-text {
+      color: t.$text-color-shade-300;
+    }
+  }
+}

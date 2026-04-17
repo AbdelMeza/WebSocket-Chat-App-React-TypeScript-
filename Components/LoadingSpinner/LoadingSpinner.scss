@@ -1,0 +1,23 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.loading-spinner {
+  @include c.flex-center;
+  width: 100%;
+  height: 100%;
+}
+
+.spinner {
+  width: 25px;
+  aspect-ratio: 1;
+  border: 3px solid t.$bg-color-shade-200;
+  border-top-color: t.$text-color-shade-300;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

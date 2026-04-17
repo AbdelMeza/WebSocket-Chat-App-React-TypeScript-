@@ -1,0 +1,69 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.login-page,
+.signup-page {
+  min-height: 100vh;
+  background-color: t.$bg-color-shade-200;
+  @include c.flex-center;
+}
+
+.form-container {
+  @include c.flex-center;
+  background-color: t.$bg-color-shade-100;
+  border: 1px solid t.$bg-color-shade-300;
+  padding: c.$space-3;
+  border-radius: c.$radius-2;
+  width: 40vw;
+  min-width: 450px;
+
+  .form-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: c.$space-2;
+    width: clamp(400px, 40vw, 750px);
+    max-width: 750px;
+
+    .upper-content {
+      display: flex;
+      flex-direction: column;
+      gap: c.$space-1;
+    }
+  }
+}
+
+.inputs-group{
+  display: flex;
+  gap: c.$space-1;
+}
+
+.inputs-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: c.$space-1;
+  color: t.$text-color-shade-100;
+}
+
+.error-message {
+  color: #fc4b4b;
+  font-size: c.$fontsize-2;
+}
+
+.auth-switch {
+  font-size: c.$fontsize-2;
+  color: t.$text-color-shade-200;
+
+  .switch-link {
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .form-container {
+    width: 100%;
+  }
+}

@@ -1,0 +1,71 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.conversations-sidebar {
+  width: 350px;
+  height: 100vh;
+  background-color: t.$bg-color-shade-100;
+  padding: c.$space-2;
+  padding-bottom: 0;
+  border-right: 1px solid t.$bg-color-shade-300;
+  display: flex;
+  flex-direction: column;
+  gap: c.$space-2;
+
+  .upper-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: t.$text-color-shade-100;
+    padding-top: c.$space-1;
+
+    .add-conversation {
+      cursor: pointer;
+    }
+  }
+
+  .middle-content {
+    position: relative;
+    border-radius: c.$radius-3;
+    background-color: t.$bg-color-shade-200;
+    border: 1px solid t.$bg-color-shade-300;
+    height: max-content;
+    display: flex;
+    align-items: center;
+
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: none;
+      padding-left: c.$space-4;
+    }
+  }
+
+  .lower-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: calc(c.$space-1 * 0.5);
+    overflow: hidden;
+    
+    .conversations-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: calc(c.$space-1 * 0.5);
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+      }
+    }
+
+    .header {
+      color: t.$text-color-shade-100;
+      margin-bottom: c.$space-1;
+    }
+  }
+}
