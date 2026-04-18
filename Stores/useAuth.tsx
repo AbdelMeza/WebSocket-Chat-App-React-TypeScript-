@@ -4,6 +4,9 @@ const API_URL: string | undefined = import.meta.env.VITE_API_URL
 
 type userType = {
     username: string
+    fullname: string
+    defaultProfileColor: string
+    avatarUrl?: string
     id: string
     chats: chat[]
 }
@@ -19,7 +22,7 @@ type authType = {
     authLoading: boolean
     clearErrors: () => void
     login: (values: { identifier: string, password: string }) => Promise<boolean>
-    signup: (values: { username: string, fullname: string, email: string, password: string }) => Promise<boolean>
+    signup: (values: { username: string, fullname: string, email: string, password: string, defaultProfileColor: string }) => Promise<boolean>
 }
 
 const useAuth = create<authType>((set) => ({
@@ -49,7 +52,15 @@ const useAuth = create<authType>((set) => ({
             console.log(data.token)
 
             localStorage.setItem("userToken", data.token)
-            set({ user: { username: data.user.username, id: data.user._id, chats: data.user.chats } })
+            set({
+                user: {
+                    username: data.user.username,
+                    fullname: data.user.fullname,
+                    defaultProfileColor: data.user.defaultProfileColor,
+                    id: data.user._id,
+                    chats: data.user.chats
+                }
+            })
             set({ authLoading: false })
             return true
         } catch (err) {
@@ -76,8 +87,18 @@ const useAuth = create<authType>((set) => ({
                 return false
             }
 
+            console.log(values)
+
             localStorage.setItem("userToken", data.token)
-            set({ user: { username: data.user.username, id: data.user.id, chats: data.user.chats } })
+            set({
+                user: {
+                    username: data.user.username,
+                    fullname: data.user.fullname,
+                    defaultProfileColor: data.user.defaultProfileColor,
+                    id: data.user.id,
+                    chats: data.user.chats
+                }
+            })
             set({ authLoading: false })
             return true
         } catch (err) {

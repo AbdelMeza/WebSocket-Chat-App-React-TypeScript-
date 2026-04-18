@@ -12,6 +12,7 @@ export type participant = {
     _id: string
     username: string
     fullname?: string
+    lastSeen: Date
     avatar?: string
 }
 
@@ -23,6 +24,9 @@ export type chat = {
 
 type userType = {
     username: string
+    fullname: string
+    defaultProfileColor: string
+    avatarUrl?: string
     id: string
     chats: chat[]
 }
@@ -56,6 +60,8 @@ const useUserData = create<UserDataState>((set) => ({
             set({
                 user: {
                     username: authState.user.username,
+                    fullname: authState.user.fullname,
+                    defaultProfileColor: authState.user.defaultProfileColor,
                     id: authState.user.id,
                     chats: authState.user.chats
                 },
@@ -85,7 +91,14 @@ const useUserData = create<UserDataState>((set) => ({
             }
 
             set({
-                user: { username: data.user.username, id: data.user.id, chats: data.user.chats },
+                user: {
+                    username: data.user.username,
+                    fullname: data.user.fullname,
+                    defaultProfileColor: data.user.defaultProfileColor,
+                    avatarUrl: data.user.avatar_url,
+                    id: data.user.id,
+                    chats: data.user.chats
+                },
                 isAuth: true
             })
         } catch (err) {

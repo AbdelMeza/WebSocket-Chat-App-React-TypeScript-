@@ -41,8 +41,8 @@ function App() {
 
     const handleChatCreated = (newChat: any) => updateChats(newChat)
     const handleOnlineList = (users: string[]) => setOnlineUsers(users)
-    const handleStatusChange = ({ userId, status }: { userId: string, status: 'online' | 'offline' }) => {
-      updateUserStatus(userId, status);
+    const handleStatusChange = ({ userId, status, lastSeen }: { userId: string, status: 'online' | 'offline', lastSeen: Date }) => {
+      updateUserStatus(userId, status, lastSeen);
     }
 
     let typingTimeout: any

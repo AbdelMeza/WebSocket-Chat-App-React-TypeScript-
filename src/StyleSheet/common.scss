@@ -12,6 +12,11 @@
 }
 
 @font-face {
+  font-family: "font-medium";
+  src: url("../../Font/main-font-medium.otf");
+}
+
+@font-face {
   font-family: "font-bold";
   src: url("../../Font/main-font-bold.otf");
 }
@@ -24,7 +29,9 @@ body {
   background-color: t.$bg-color-shade-100;
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
   margin: 0;
   padding: 0;
   outline: 0;
@@ -52,4 +59,8 @@ input {
 
 svg {
   color: t.$text-color-shade-100;
+}
+
+.username{
+  font-family: "font-medium";
 }

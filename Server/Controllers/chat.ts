@@ -18,7 +18,10 @@ export async function getUserChats(
 
     const userChats = await chat_model
       .find({ participants: decoded.id })
-      .populate("participants", "username fullname")
+      .populate(
+        "participants",
+        "username fullname defaultProfileColor lastSeen",
+      )
       .populate("lastMessage", "content timestamp")
       .sort({ updatedAt: -1 });
 
@@ -50,7 +53,10 @@ export async function createChat(
         isGroup: false,
         participants: { $all: [user_id, current_user_id] },
       })
-      .populate("participants", "username fullname avatar");
+      .populate(
+        "participants",
+        "username fullname defaultProfileColor lastSeen",
+      );
 
     if (existing_chat) {
       return res.status(400).json({ message: "Existing conversation" });
@@ -63,7 +69,7 @@ export async function createChat(
 
     const populatedChat = await new_chat.populate(
       "participants",
-      "username fullname avatar",
+      "username fullname defaultProfileColor lastSeen",
     );
 
     populatedChat.participants.forEach((p: any) => {

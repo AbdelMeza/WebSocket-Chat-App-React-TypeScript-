@@ -50,7 +50,7 @@
     height: 100%;
     gap: calc(c.$space-1 * 0.5);
     overflow: hidden;
-    
+
     .conversations-wrapper {
       display: flex;
       flex-direction: column;
@@ -66,6 +66,10 @@
     .header {
       color: t.$text-color-shade-100;
       margin-bottom: c.$space-1;
+
+      .header-text {
+        font-family: "font-medium";
+      }
     }
   }
 }

@@ -6,6 +6,8 @@ type User = {
   fullname: string;
   email: string;
   password: string;
+  lastSeen: Date;
+  defaultProfileColor: string;
   chats: chatType[];
 };
 
@@ -24,6 +26,8 @@ const user_schema = new Schema<User>({
   password: {
     type: String,
   },
+  defaultProfileColor: String,
+  lastSeen: Date,
   chats: {
     title: String,
     participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "chat" }],

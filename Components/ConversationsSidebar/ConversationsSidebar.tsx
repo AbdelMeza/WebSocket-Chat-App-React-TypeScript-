@@ -5,13 +5,14 @@ import v from "../../src/StyleSheet/_variable.module.scss"
 import './ConversationsSidebar.scss';
 import { ConversationItem, ConversationItemSkeleton } from '../ConversationItem/ConversationItem';
 import useChat from '../../Stores/useChat';
-import { avatarUrl } from '../../src/App';
 
 export default function ConversationsSidebar() {
     const navigate = useNavigate()
     const { user } = useUserData()
     const { chatsLoading } = useChat()
     const { toggleAddConv } = useElementsState()
+
+    console.log(user)
 
     const openConversation = (conversationId: string) => {
         if (!conversationId) return
@@ -46,7 +47,8 @@ export default function ConversationsSidebar() {
                         key={chat?._id}
                         userId={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?._id}
                         username={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.username || "Unknown User"}
-                        avatarUrl={`${avatarUrl}`}
+                        fullname={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.fullname || "Unknown User"}
+                        defaultColor={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.defaultProfileColor || "Unknown User"}
                         onClick={() => openConversation(chat?._id)}
                         lastMessage={chat?.lastMessage?.content || <span className="no-messages">Start a conversation...</span>}
                         timestamp={chat?.lastMessage?.timestamp ? new Date(chat?.lastMessage?.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null}

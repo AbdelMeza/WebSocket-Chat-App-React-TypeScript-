@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
+import { user_model } from "./Models/user.model.ts";
 
 let io: Server | undefined;
 
@@ -44,15 +45,20 @@ export const initSocket = (server: HttpServer): void => {
       });
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       if (currentUserId) {
         onlineUsers.delete(currentUserId);
 
         io?.emit("user:online_list", Array.from(onlineUsers.keys()));
 
+        await user_model.findByIdAndUpdate(currentUserId, {
+          lastSeen: new Date(),
+        });
+
         socket.broadcast.emit("user:status_changed", {
           userId: currentUserId,
           status: "offline",
+          lastSeen: new Date(),
         });
 
         console.log(`User ${currentUserId} disconnected`);

@@ -1,9 +1,12 @@
-import useActivityStore from '../../Stores/UseUserActivity'
+import useActivityStore from '../../Stores/useUserActivity'
+import DefaultProfile from '../DefaultProfilePicture/DefaultProfilePicture'
 import './ConversationItem.scss'
 
 type ConversationItemProps = {
     userId: string
     username: string
+    fullname: string
+    defaultColor: string
     avatarUrl?: string
     onClick: () => void
     lastMessage: string
@@ -11,14 +14,15 @@ type ConversationItemProps = {
     unread: boolean
 }
 
-export function ConversationItem({ userId, username, avatarUrl, onClick, lastMessage, timestamp, unread }: ConversationItemProps) {
+export function ConversationItem({ userId, username, fullname, defaultColor, avatarUrl, onClick, lastMessage, timestamp, unread }: ConversationItemProps) {
     const isOnline = useActivityStore((state) => state.onlineUsers.has(userId))
 
     return <div className="conversation-item" onClick={onClick}>
         <div className="content avatar-container">
-            <div className="avatar">
+            {avatarUrl ? <div className="avatar">
                 <img src={avatarUrl} alt="User Avatar" />
-            </div>
+            </div> : <DefaultProfile username={fullname} defaultColor={defaultColor} size={3} />
+            }
             <span className={`online-badge ${isOnline ? "appear" : ""}`}></span>
         </div>
         <div className="content information-container">

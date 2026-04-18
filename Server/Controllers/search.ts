@@ -45,7 +45,7 @@ async function searchUser(search: string, currentUser: any) {
           { fullname: { $regex: regex } },
         ],
       })
-      .select("_id username fullname")
+      .select("_id username fullname defaultProfileColor")
       .limit(10);
 
     return users;

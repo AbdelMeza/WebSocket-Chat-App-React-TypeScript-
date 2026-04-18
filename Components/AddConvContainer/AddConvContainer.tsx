@@ -7,6 +7,7 @@ import useElementsState from "../../Stores/useStates";
 import useUserData from "../../Stores/userData";
 import useChat from "../../Stores/useChat";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import DefaultProfile from "../DefaultProfilePicture/DefaultProfilePicture";
 
 export default function AddConvContainer() {
     const { addConvOpen, toggleAddConv } = useElementsState()
@@ -93,9 +94,9 @@ export default function AddConvContainer() {
                 {searchLoading ? <LoadingSpinner /> : searchResult && searchResult.length > 0 ?
                     searchResult?.map((user: any) => (
                         <div key={user._id} className={`search-result-item ${selectedUsers.includes(user._id) ? "selected" : ""}`} onClick={() => addUser(user._id)}>
-                            <div className="avatar">
+                            {user.avatarUrl ? <div className="avatar">
                                 <img src={user.avatar || "https://scontent.falg6-2.fna.fbcdn.net/v/t1.30497-1/84628273_176159830277856_972693363922829312_n.jpg?stp=c379.0.1290.1290a_dst-jpg_s200x200_tt6&_nc_cat=1&ccb=1-7&_nc_sid=7565cd&_nc_ohc=NyOlW9FwyRUQ7kNvwH27lEK&_nc_oc=AdoQSqrWqErCQOp_GpEGZHKftaif_R_rDOPQcvvr9BEGyFNMTOqezFIhAvIYWcPcz2E&_nc_zt=24&_nc_ht=scontent.falg6-2.fna&_nc_ss=7a30f&oh=00_AfxgC7Qg0Y0y79PVeX_3bU-r7FtSHDUS-i5unRsCKqrdog&oe=69F042D9"} alt="User Avatar" />
-                            </div>
+                            </div> : <DefaultProfile username={user?.fullname} defaultColor={user?.defaultProfileColor} size={1}/>}
                             <div className="identifiers">
                                 <div className="username">{user.username}</div>
                                 <div className="fullname">{user.fullname}</div>

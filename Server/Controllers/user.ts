@@ -29,11 +29,24 @@ export async function userData(req: Request, res: Response): Promise<void> {
 
     const userChats = await user_model
       .findById(decoded.id)
-      .populate({ path: "chats", populate: { path: "participants", select: "username" } })
+      .populate({
+        path: "chats",
+        populate: {
+          path: "participants",
+          select: "username lastSeen defaultProfileColor",
+        },
+      })
       .select("chats");
 
     res.status(200).json({
-      user: { username: user.username, id: user._id, chats: userChats?.chats || [] },
+      user: {
+        username: user.username,
+        fullname: user.fullname,
+        defaultProfile: user.defaultProfileColor,
+        lastSeen: user.lastSeen,
+        id: user._id,
+        chats: userChats?.chats || [],
+      },
     });
   } catch (error) {
     console.error("Error in userData:", error);

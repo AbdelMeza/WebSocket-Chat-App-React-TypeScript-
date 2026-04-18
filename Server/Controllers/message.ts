@@ -8,8 +8,8 @@ export async function getMessages(req: Request, res: Response): Promise<void> {
 
     const messages = await message_model
       .find({ chatId })
-      .populate("senderId", "username")
-      .populate("receiverId", "username")
+      .populate("senderId", "username fullname defaultProfileColor")
+      .populate("receiverId", "username fullname defaultProfileColor")
       .sort({ createdAt: 1 });
 
     if (!messages) {
@@ -43,7 +43,10 @@ export async function createMessage(
       content,
     });
 
-    const populatedMessage = await new_message.populate("senderId", "username");
+    const populatedMessage = await new_message.populate(
+      "senderId",
+      "username fullname defaultProfileColor",
+    );
 
     getIO()
       .to(receiverId)

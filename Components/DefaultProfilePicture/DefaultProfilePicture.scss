@@ -1,0 +1,16 @@
+@use "../../src/StyleSheet/config" as c;
+@use "../../src/StyleSheet/theme" as t;
+
+.default-profile-picture {
+  @include c.flex-center;
+
+  .avatar {
+    border: 1px solid transparent;
+    @include c.flex-center;
+
+    .initial {
+      font-family: "font-bold";
+      font-size: calc(c.$fontsize-1 * 1.2);
+    }
+  }
+}

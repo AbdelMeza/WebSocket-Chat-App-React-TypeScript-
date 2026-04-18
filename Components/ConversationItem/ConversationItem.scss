@@ -35,7 +35,7 @@
 
   @include c.hover-highlight;
 
-  &:active{
+  &:active {
     scale: 0.98;
   }
 
@@ -136,6 +136,7 @@
 
     .conversation-name {
       color: t.$text-color-shade-100;
+      font-family: "font-medium";
       min-height: 10px;
     }
 

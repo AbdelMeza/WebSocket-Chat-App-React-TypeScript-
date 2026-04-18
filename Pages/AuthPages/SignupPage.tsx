@@ -1,6 +1,6 @@
 import "./AuthPages.scss";
 import useAuth from "../../Stores/useAuth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../Components/Inputs/Inputs";
 import Button from "../../Components/Button/Button";
@@ -13,6 +13,24 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const colors = [
+    "196, 108, 255",
+    "255, 108, 108",
+    "108, 255, 157",
+    "108, 196, 255",
+    "255, 196, 108",
+    "255, 108, 235",
+    "108, 255, 255",
+    "180, 255, 108",
+    "255, 235, 108",
+    "150, 150, 255"
+  ]
+
+  const randomColor = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * colors.length)
+    return colors[randomIndex]
+  }, [])
+
   useEffect(() => {
     // Clear errors when the component mounts or when the user starts typing
     return () => {
@@ -23,7 +41,7 @@ export default function SignupPage() {
 
   // Form submission handler
   const handleSubmit = async () => {
-    const success = await signup({ username, email, password, fullname });
+    const success = await signup({ username, email, password, fullname, defaultProfileColor: randomColor });
     if (success) {
       navigate("/"); // Redirect to home page on successful signup
     }

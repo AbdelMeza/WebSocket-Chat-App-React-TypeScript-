@@ -30,8 +30,15 @@ $transition-1: 0.1s ease-in-out;
 }
 
 @mixin hover-highlight {
+  & {
+    transition:
+      background-color $transition-1,
+      color $transition-1;
+    cursor: pointer;
+  }
+
   [data-theme="light"] &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.03);
     color: t.$text-color-shade-100;
   }
 
@@ -40,3 +47,4 @@ $transition-1: 0.1s ease-in-out;
     color: t.$text-color-shade-100;
   }
 }
+  

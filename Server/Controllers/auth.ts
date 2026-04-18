@@ -43,7 +43,10 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     // --- Verify the password using bcrypt ---
     // Reuse hashPass.comparePasswords to avoid exposing bcrypt details here.
-    const isValidPassword = await comparePasswords( password, (existing_user as any).password,)
+    const isValidPassword = await comparePasswords(
+      password,
+      (existing_user as any).password,
+    );
 
     if (!isValidPassword) {
       errors.push({ field: "password", message: "Password is incorrect" });
@@ -69,6 +72,8 @@ export async function login(req: Request, res: Response): Promise<void> {
     const userResponse = (existing_user as any).toObject() as {
       _id: string;
       username: string;
+      fullname: string;
+      defaultProfileColor: string;
       email: string;
       password?: string;
     };
@@ -86,12 +91,14 @@ export async function signup(req: Request, res: Response): Promise<void> {
   type user_data_type = {
     username: string;
     fullname: string;
+    defaultProfileColor: string;
     email: string;
     password: string;
   };
 
   try {
-    const { username, fullname, email, password } = req.body as user_data_type;
+    const { username, fullname, email, password, defaultProfileColor } =
+      req.body as user_data_type;
     const errors: { field: string; message: string }[] = [];
 
     // --- Validate required fields ---
@@ -133,6 +140,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     const newUser = await user_model.create({
       username: username,
       fullname: fullname,
+      defaultProfileColor: defaultProfileColor,
       email: email,
       password: hashedPassword,
     });
@@ -152,6 +160,7 @@ export async function signup(req: Request, res: Response): Promise<void> {
     const userResponse = (newUser as any).toObject() as {
       _id: string;
       username: string;
+      fullname: string;
       email: string;
       password?: string;
     };
