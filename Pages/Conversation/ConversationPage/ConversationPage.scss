@@ -48,6 +48,11 @@
 
       .username {
         color: t.$text-color-shade-100;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 150px;
+        min-height: 10px;
       }
 
       .activity {
@@ -88,7 +93,7 @@
           border-radius: 0 c.$radius-2 c.$radius-2 0;
         }
 
-        &:hover{
+        &:hover {
           @include c.hover-highlight;
         }
       }

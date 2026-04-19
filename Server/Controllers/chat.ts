@@ -37,34 +37,47 @@ export async function createChat(
   res: Response,
 ): Promise<void | Response> {
   try {
-    const { user_id, current_user_id } = req.body;
+    const { participants_ids, is_group, default_color } = req.body;
 
-    const [targetUser, currentUser] = await Promise.all([
-      user_model.findById(user_id),
-      user_model.findById(current_user_id),
-    ]);
-
-    if (!targetUser || !currentUser) {
-      return res.status(404).json({ message: "User not found" });
+    if (!Array.isArray(participants_ids) || participants_ids.length < 2) {
+      return res
+        .status(400)
+        .json({ message: "At least two participants are required" });
     }
 
-    const existing_chat = await chat_model
-      .findOne({
-        isGroup: false,
-        participants: { $all: [user_id, current_user_id] },
-      })
-      .populate(
-        "participants",
-        "username fullname defaultProfileColor lastSeen",
-      );
+    const foundUsers = await user_model.find({
+      _id: { $in: participants_ids },
+    });
 
-    if (existing_chat) {
-      return res.status(400).json({ message: "Existing conversation" });
+    if (foundUsers.length !== participants_ids.length) {
+      return res.status(404).json({ message: "One or more users not found" });
+    }
+
+    if (!is_group) {
+      const existing_chat = await chat_model
+        .findOne({
+          isGroup: false,
+          participants: {
+            $all: participants_ids,
+            $size: 2,
+          },
+        })
+        .populate(
+          "participants",
+          "username fullname defaultProfileColor lastSeen",
+        );
+
+      if (existing_chat) {
+        return res
+          .status(200)
+          .json({ new_chat: existing_chat, message: "Existing conversation" });
+      }
     }
 
     const new_chat = await chat_model.create({
-      participants: [user_id, current_user_id],
-      isGroup: false,
+      participants: participants_ids,
+      defaultColor: default_color,
+      isGroup: is_group,
     });
 
     const populatedChat = await new_chat.populate(

@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import type { chat } from "./userData"
 const API_URL: string | undefined = import.meta.env.VITE_API_URL
 
 type userType = {
@@ -8,7 +7,6 @@ type userType = {
     defaultProfileColor: string
     avatarUrl?: string
     id: string
-    chats: chat[]
 }
 
 type errorType = {
@@ -49,16 +47,14 @@ const useAuth = create<authType>((set) => ({
                 return false
             }
 
-            console.log(data.token)
-
             localStorage.setItem("userToken", data.token)
+            
             set({
                 user: {
                     username: data.user.username,
                     fullname: data.user.fullname,
                     defaultProfileColor: data.user.defaultProfileColor,
                     id: data.user._id,
-                    chats: data.user.chats
                 }
             })
             set({ authLoading: false })
@@ -87,16 +83,14 @@ const useAuth = create<authType>((set) => ({
                 return false
             }
 
-            console.log(values)
-
             localStorage.setItem("userToken", data.token)
+
             set({
                 user: {
                     username: data.user.username,
                     fullname: data.user.fullname,
                     defaultProfileColor: data.user.defaultProfileColor,
-                    id: data.user.id,
-                    chats: data.user.chats
+                    id: data.user._id,
                 }
             })
             set({ authLoading: false })

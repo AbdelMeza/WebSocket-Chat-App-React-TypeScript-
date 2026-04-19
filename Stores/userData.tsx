@@ -8,27 +8,12 @@ const API_URL: string | undefined = import.meta.env.VITE_API_URL
  * retrieved from the backend.
  */
 
-export type participant = {
-    _id: string
-    username: string
-    fullname?: string
-    lastSeen: Date
-    avatar?: string
-}
-
-export type chat = {
-    _id: string
-    participants: participant[]
-    isGroup: boolean
-}
-
 type userType = {
     username: string
     fullname: string
     defaultProfileColor: string
     avatarUrl?: string
     id: string
-    chats: chat[]
 }
 
 /**
@@ -63,7 +48,6 @@ const useUserData = create<UserDataState>((set) => ({
                     fullname: authState.user.fullname,
                     defaultProfileColor: authState.user.defaultProfileColor,
                     id: authState.user.id,
-                    chats: authState.user.chats
                 },
                 isAuth: true
             })
@@ -97,7 +81,6 @@ const useUserData = create<UserDataState>((set) => ({
                     defaultProfileColor: data.user.defaultProfileColor,
                     avatarUrl: data.user.avatar_url,
                     id: data.user.id,
-                    chats: data.user.chats
                 },
                 isAuth: true
             })

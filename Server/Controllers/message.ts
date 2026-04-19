@@ -29,33 +29,38 @@ export async function createMessage(
   res: Response,
 ): Promise<void> {
   try {
-    const { senderId, receiverId, chatId, content } = req.body;
+    const { senderId, receiversIds, chatId, content } = req.body;
 
-    if (!senderId || !receiverId || !chatId || !content) {
-      res.status(400).json({ error: "Error creating message" });
+    if (
+      !senderId ||
+      !receiversIds ||
+      !chatId ||
+      !content ||
+      !Array.isArray(receiversIds)
+    ) {
+      res.status(400).json({ error: "Données manquantes ou format invalide" });
       return;
     }
 
     const new_message = await message_model.create({
       senderId,
-      receiverId,
+      receiverId: receiversIds,
       chatId,
       content,
     });
 
-    const populatedMessage = await new_message.populate(
-      "senderId",
-      "username fullname defaultProfileColor",
-    );
+    const populatedMessage = await new_message.populate([
+      { path: "senderId", select: "username fullname defaultProfileColor" },
+      { path: "receiverId", select: "username fullname defaultProfileColor" },
+    ]);
 
-    getIO()
-      .to(receiverId)
-      .to(senderId)
-      .emit("message:received", populatedMessage);
+    const io = getIO();
+
+    io.to(receiversIds).to(senderId).emit("message:received", populatedMessage);
 
     res.status(201).json(populatedMessage);
   } catch (error) {
-    console.log(error);
+    console.error("Erreur createMessage:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

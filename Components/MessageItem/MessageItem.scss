@@ -41,12 +41,23 @@
     opacity: 1;
   }
 
-  .message-content {
-    padding: c.$space-2;
-    border-radius: c.$radius-2;
-    color: t.$text-color-shade-100;
-    max-width: 300px;
-    word-wrap: break-word;
+  .content-container {
+    display: flex;
+    flex-direction: column;
+
+    .username {
+      color: t.$text-color-shade-100;
+      font-family: "font-regular";
+      margin: calc(c.$space-1 * 0.8);
+    }
+
+    .message-content {
+      padding: c.$space-2;
+      border-radius: c.$radius-2;
+      color: t.$text-color-shade-100;
+      max-width: 300px;
+      word-wrap: break-word;
+    }
   }
 
   .avatar {

@@ -7,9 +7,10 @@ type messageItemProps = {
     sender: any
     content: string
     timestamp: string
+    fromGroup: boolean | undefined
 }
 
-export default function MessageItem({ sender, content, timestamp }: messageItemProps) {
+export default function MessageItem({ sender, content, timestamp, fromGroup }: messageItemProps) {
     const currentUserId = useUserData((state) => state.user?.id)
     const currentUserIsSender = currentUserId === sender?._id
 
@@ -20,7 +21,10 @@ export default function MessageItem({ sender, content, timestamp }: messageItemP
             </div> :
             <DefaultProfile username={sender?.fullname} defaultColor={sender?.defaultProfileColor} size={1} /> : null
         }
-        <div className="message-content">{content}</div>
+        <div className="content-container">
+            {fromGroup && !currentUserIsSender && <span className="username">{sender.username}</span>}
+            <div className="message-content" style={fromGroup ? { backgroundColor: `rgba(${sender?.defaultProfileColor}, 0.1)` } : {}}>{content}</div>
+        </div>
         <span className="timestamp">{timestamp}</span>
     </div>
 }

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import './AddConvContainer.scss'
+import { useEffect, useMemo, useState } from "react";
+import './AddConvContainer.scss';
 import { useSearchParams } from "react-router-dom";
 import useSearch from "../../Stores/useSearch";
 import Button from "../Button/Button";
@@ -9,109 +9,171 @@ import useChat from "../../Stores/useChat";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import DefaultProfile from "../DefaultProfilePicture/DefaultProfilePicture";
 
+interface SearchUser {
+    _id: string;
+    username: string;
+    fullname: string;
+    avatarUrl?: string;
+    avatar?: string;
+    defaultProfileColor?: string;
+}
+
 export default function AddConvContainer() {
-    const { addConvOpen, toggleAddConv } = useElementsState()
-    const { user } = useUserData()
-    const { createChat, setChatId } = useChat()
-    const { search, searchResult, searchLoading } = useSearch()
-    const [searchValue, setSearchValue] = useState<string>("")
-    const [searchParams, setSearchParams] = useSearchParams()
-    const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+    const { addConvOpen, toggleAddConv } = useElementsState();
+    const { user } = useUserData();
+    const { createChat, setChatId } = useChat();
+    const { search, searchResult, searchLoading } = useSearch();
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [selectedUsers, setSelectedUsers] = useState<SearchUser[]>([]);
+
+    const colors = [
+        "196, 108, 255", "255, 108, 108", "108, 255, 157",
+        "108, 196, 255", "255, 196, 108", "255, 108, 235",
+        "108, 255, 255", "180, 255, 108", "255, 235, 108", "150, 150, 255"
+    ];
+
+    const randomColor = useMemo(() => {
+        const randomIndex = Math.floor(Math.random() * colors.length);
+        return colors[randomIndex] || colors[0];
+    }, []);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value === "") {
-            setSearchValue("")
-            searchParams.delete("search")
-            setSearchParams(searchParams)
-            return
+        const val = e.target.value;
+        setSearchValue(val);
+        
+        if (val === "") {
+            searchParams.delete("search");
+            setSearchParams(searchParams);
+        } else {
+            setSearchParams(prev => {
+                prev.set("search", val);
+                return prev;
+            });
         }
-
-        setSearchValue(e.target.value)
-        setSearchParams(prev => {
-            prev.set("search", e.target.value)
-            return prev
-        })
-    }
+    };
 
     useEffect(() => {
         if (!addConvOpen) {
-            setSearchValue("")
-            setSelectedUsers([])
-            searchParams.delete("search")
-            setSearchParams(searchParams)
+            setSearchValue("");
+            setSelectedUsers([]);
+            const newParams = new URLSearchParams(searchParams);
+            newParams.delete("search");
+            setSearchParams(newParams);
         }
-    }, [addConvOpen])
+    }, [addConvOpen]);
 
     useEffect(() => {
         const searchBounce = setTimeout(() => {
-            search({ searchValue, searchType: "user" })
-            setSelectedUsers([])
-        }, 500)
+            // Éviter de lancer une recherche vide
+            if (searchValue.trim() !== "") {
+                search({ searchValue, searchType: "user" });
+            }
+        }, 500);
 
-        return () => {
-            clearTimeout(searchBounce)
+        return () => clearTimeout(searchBounce);
+    }, [searchValue, search]);
+
+    const toggleUser = (userToToggle: SearchUser) => {
+        if (selectedUsers.some(u => u._id === userToToggle._id)) {
+            setSelectedUsers((prev) => prev.filter((u) => u._id !== userToToggle._id));
+        } else {
+            setSelectedUsers((prev) => [...prev, userToToggle]);
         }
-    }, [searchValue])
-
-    const addUser = (id: string) => {
-        if (selectedUsers.includes(id)) {
-            setSelectedUsers((prev) => prev.filter((userId) => userId !== id))
-            return
-        }
-
-        setSelectedUsers((prev) => [...prev, id])
-    }
+    };
 
     const handleCreateConversation = async () => {
-        const participantId = selectedUsers[0]
-        const chatId = await createChat({ participantId, currentUserId: user?.id || "" })
+        if (!user?.id) return;
+
+        const isGroup = selectedUsers.length > 1;
+        // On extrait uniquement les IDs des utilisateurs sélectionnés
+        const participantsIds = [...selectedUsers.map(u => u._id), user.id];
+        
+        const chatId = await createChat({ 
+            participantsIds, 
+            isGroup, 
+            defaultColor: isGroup ? randomColor : null 
+        });
 
         if (chatId) {
-            setChatId(chatId)
-            toggleAddConv()
+            setChatId(chatId);
+            toggleAddConv();
         }
-    }
+    };
 
-    return <div className={`add-conv-container ${addConvOpen ? "open" : ""}`}>
-        <div className="content">
-            <div className="upper-content">
-                <span className="upper-text">New conversation</span>
-                <div className="close-btn" onClick={() => toggleAddConv()}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width={20} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
+    return (
+        <div className={`add-conv-container ${addConvOpen ? "open" : ""}`}>
+            <div className="content">
+                <div className="upper-content">
+                    <span className="upper-text">New conversation</span>
+                    <div className="close-btn" onClick={() => toggleAddConv()}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width={20} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </div>
                 </div>
-            </div>
-            <div className="middle-content">
-                <div className="search-input-container">
-                    <svg xmlns="http://www.w3.org/2000/svg" width={15} viewBox="0 0 24 24" fill="currentColor">
-                        <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clipRule="evenodd" />
-                    </svg>
-                    <input type="text" placeholder="Search..." value={searchValue} onChange={(e) => handleSearch(e)} />
+
+                <div className="middle-content">
+                    <div className="search-input-container">
+                        <svg xmlns="http://www.w3.org/2000/svg" width={15} viewBox="0 0 24 24" fill="currentColor">
+                            <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clipRule="evenodd" />
+                        </svg>
+                        <input type="text" placeholder="Search..." value={searchValue} onChange={handleSearch} />
+                    </div>
                 </div>
-            </div>
-            <div className="lower-content">
-                {searchLoading ? <LoadingSpinner /> : searchResult && searchResult.length > 0 ?
-                    searchResult?.map((user: any) => (
-                        <div key={user._id} className={`search-result-item ${selectedUsers.includes(user._id) ? "selected" : ""}`} onClick={() => addUser(user._id)}>
-                            {user.avatarUrl ? <div className="avatar">
-                                <img src={user.avatar || "https://scontent.falg6-2.fna.fbcdn.net/v/t1.30497-1/84628273_176159830277856_972693363922829312_n.jpg?stp=c379.0.1290.1290a_dst-jpg_s200x200_tt6&_nc_cat=1&ccb=1-7&_nc_sid=7565cd&_nc_ohc=NyOlW9FwyRUQ7kNvwH27lEK&_nc_oc=AdoQSqrWqErCQOp_GpEGZHKftaif_R_rDOPQcvvr9BEGyFNMTOqezFIhAvIYWcPcz2E&_nc_zt=24&_nc_ht=scontent.falg6-2.fna&_nc_ss=7a30f&oh=00_AfxgC7Qg0Y0y79PVeX_3bU-r7FtSHDUS-i5unRsCKqrdog&oe=69F042D9"} alt="User Avatar" />
-                            </div> : <DefaultProfile username={user?.fullname} defaultColor={user?.defaultProfileColor} size={1}/>}
-                            <div className="identifiers">
-                                <div className="username">{user.username}</div>
-                                <div className="fullname">{user.fullname}</div>
-                            </div>
-                            <div className="selection-status">
-                                <svg xmlns="http://www.w3.org/2000/svg" width={15} fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+
+                {selectedUsers.length > 0 &&
+                    <div className="selected-users-list">
+                        {selectedUsers.map(u => (
+                            <span key={u._id} className="selected-user" onClick={() => toggleUser(u)}>
+                                {u.username}
+                                <svg xmlns="http://www.w3.org/2000/svg" width={15} viewBox="0 0 24 24" fill="currentColor">
+                                    <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
                                 </svg>
+                            </span>
+                        ))}
+                    </div>
+                }
+
+                <div className="lower-content">
+                    {searchLoading ? (
+                        <LoadingSpinner />
+                    ) : (searchResult && searchResult.length > 0) ? (
+                        searchResult.map((u: SearchUser) => (
+                            <div 
+                                key={u._id} 
+                                className={`search-result-item ${selectedUsers.some(sel => sel._id === u._id) ? "selected" : ""}`} 
+                                onClick={() => toggleUser(u)}
+                            >
+                                {u.avatarUrl || u.avatar ? (
+                                    <div className="avatar">
+                                        <img src={u.avatar || u.avatarUrl} alt="User Avatar" />
+                                    </div>
+                                ) : (
+                                    <DefaultProfile username={u.fullname} defaultColor={u.defaultProfileColor || randomColor} size={1} />
+                                )}
+                                <div className="identifiers">
+                                    <div className="username">{u.username}</div>
+                                    <div className="fullname">{u.fullname}</div>
+                                </div>
+                                <div className="selection-status">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={15} fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
-                    )) : <span className="empty-result">Search for someone to chat with</span>}
+                        ))
+                    ) : (
+                        <span className="empty-result">Search for someone to chat with</span>
+                    )}
+                </div>
+
+                {selectedUsers.length > 0 && (
+                    <div className="add-conv-btn">
+                        <Button content="chat" type="main" isDisabled={false} size={1} onClick={handleCreateConversation} />
+                    </div>
+                )}
             </div>
-            {selectedUsers.length > 0 && <div className="add-conv-btn">
-                <Button content="chat" type={"main"} isDisabled={false} size={1} onClick={handleCreateConversation} />
-            </div>}
         </div>
-    </div>
+    );
 }

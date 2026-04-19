@@ -1,18 +1,35 @@
 import { create } from "zustand"
-import useUserData from "./userData"
 
 const API_URL: string | undefined = import.meta.env.VITE_API_URL
 
+type participant = {
+    _id: string
+    username: string
+    fullname?: string
+    avatar?: string
+    lastSeen: Date
+    defaultProfileColor: string
+}
+
+type chat = {
+    _id: string
+    participants: participant[]
+    defaultColor?: string
+    isGroup: boolean
+}
+
 type ChatState = {
+    chats: chat[] | null
     chatId: string | null
     setChatId: (id: string) => void
     chatsLoading: boolean
     getChats: () => Promise<void>
-    createChat: ({ participantId, currentUserId }: { participantId: string; currentUserId: string }) => Promise<string | void>
+    createChat: ({ participantsIds, isGroup, defaultColor }: { participantsIds: string[], isGroup: boolean, defaultColor?: string | null }) => Promise<string | void>
     updateChats: (newChat: any) => void
 }
 
 const useChat = create<ChatState>((set) => ({
+    chats: null,
     chatId: null,
     setChatId: (id: string) => set({ chatId: id }),
     chatsLoading: false,
@@ -36,30 +53,23 @@ const useChat = create<ChatState>((set) => ({
             }
 
             set({ chatsLoading: false })
-            useUserData.setState((state) => ({
-                user: state.user
-                    ? {
-                        ...state.user,
-                        chats: Array.isArray(data.user_chats) ? data.user_chats : []
-                    }
-                    : null
-            }))
-
+            set({ chats: data.user_chats })
         } catch (error) {
             set({ chatsLoading: false })
             console.log(error)
         }
     },
 
-    createChat: async ({ participantId, currentUserId }) => {
+    createChat: async ({ participantsIds, isGroup, defaultColor }) => {
         try {
             set({ chatsLoading: true })
             const res = await fetch(`${API_URL}/chat/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    user_id: participantId,
-                    current_user_id: currentUserId
+                    participants_ids: participantsIds,
+                    default_color: defaultColor,
+                    is_group: isGroup
                 })
             })
 
@@ -80,19 +90,14 @@ const useChat = create<ChatState>((set) => ({
     },
 
     updateChats: (newChat) => {
-        useUserData.setState((state) => {
-            if (!state.user) return state
+        set((state) => {
+            const currentChats = state.chats || []
+            const chatExists = currentChats.some(c => c._id === newChat._id)
 
-            const chatExists = state.user.chats.some(c => c._id === newChat._id)
             if (chatExists) return state
 
-            return {
-                user: {
-                    ...state.user,
-                    chats: [newChat, ...state.user.chats]
-                }
-            }
-        })
+            return { chats: [newChat, ...currentChats] }
+        });
     },
 }))
 

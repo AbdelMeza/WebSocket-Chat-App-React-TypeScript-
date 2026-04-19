@@ -138,6 +138,11 @@
       color: t.$text-color-shade-100;
       font-family: "font-medium";
       min-height: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 110px;
+      min-height: 10px;
     }
 
     .conversation-meta {

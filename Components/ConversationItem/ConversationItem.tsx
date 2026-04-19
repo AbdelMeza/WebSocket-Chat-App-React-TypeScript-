@@ -1,33 +1,43 @@
+import { avatarUrl } from '../../src/App'
+import useUserData from '../../Stores/userData'
 import useActivityStore from '../../Stores/useUserActivity'
-import DefaultProfile from '../DefaultProfilePicture/DefaultProfilePicture'
+import DefaultProfile, { DefaultGroupProfile } from '../DefaultProfilePicture/DefaultProfilePicture'
 import './ConversationItem.scss'
 
 type ConversationItemProps = {
-    userId: string
-    username: string
-    fullname: string
-    defaultColor: string
-    avatarUrl?: string
+    participants: any
+    isGroup: boolean
     onClick: () => void
     lastMessage: string
+    defaultColor: string
     timestamp: string | null
     unread: boolean
 }
 
-export function ConversationItem({ userId, username, fullname, defaultColor, avatarUrl, onClick, lastMessage, timestamp, unread }: ConversationItemProps) {
-    const isOnline = useActivityStore((state) => state.onlineUsers.has(userId))
+export function ConversationItem({ participants, isGroup, onClick, defaultColor, lastMessage, timestamp, unread }: ConversationItemProps) {
+    const { user } = useUserData()
+    let otherParticipants = participants.filter((p: any) => p._id !== user!.id)
+    const isOnline = useActivityStore((state) =>
+        otherParticipants.some((p: any) => state.onlineUsers.has(p._id))
+    )
 
-    return <div className="conversation-item" onClick={onClick}>
+    const displayName = isGroup
+        ? otherParticipants.map((p: any) => p.username).join(', ')
+        : (otherParticipants[0]?.username || "User")
+
+    return <div className={`conversation-item ${isGroup ? "group" : ""}`} onClick={onClick}>
         <div className="content avatar-container">
-            {avatarUrl ? <div className="avatar">
-                <img src={avatarUrl} alt="User Avatar" />
-            </div> : <DefaultProfile username={fullname} defaultColor={defaultColor} size={3} />
+            {
+                isGroup ? <DefaultGroupProfile size={3} defaultColor={defaultColor} />
+                    : otherParticipants[0].avatarUrl ? <div className="avatar">
+                        <img src={avatarUrl} alt="User Avatar" />
+                    </div> : <DefaultProfile username={otherParticipants[0].fullname} defaultColor={otherParticipants[0].defaultProfileColor} size={3} />
             }
             <span className={`online-badge ${isOnline ? "appear" : ""}`}></span>
         </div>
         <div className="content information-container">
             <div className="conversation-info">
-                <div className="conversation-name">{username}</div>
+                <div className="conversation-name">{displayName}</div>
             </div>
             <div className="conversation-meta">
                 <div className="last-message">{lastMessage}</div>

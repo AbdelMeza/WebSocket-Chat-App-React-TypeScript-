@@ -12,7 +12,7 @@ type MessageState = {
     messagesList: MessageType[]
     messagesLoading: boolean
     getMessages: (chatId: string) => Promise<void>
-    createMessage: ({ senderId, receiverId, chatId, content }: { senderId: string, receiverId: string, chatId: string, content: string }) => Promise<void>
+    createMessage: ({ senderId, receiversIds, chatId, content }: { senderId: string, receiversIds: string[], chatId: string, content: string }) => Promise<void>
 }
 
 const useMessagesStore = create<MessageState>((set) => ({
@@ -45,12 +45,12 @@ const useMessagesStore = create<MessageState>((set) => ({
         }
     },
 
-    createMessage: async ({ senderId, receiverId, chatId, content }) => {
+    createMessage: async ({ senderId, receiversIds, chatId, content }) => {
         try {
             await fetch(`${API_URL}/messages/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ senderId, receiverId, chatId, content })
+                body: JSON.stringify({ senderId, receiversIds, chatId, content })
             })
         } catch (error) {
             console.log(error)

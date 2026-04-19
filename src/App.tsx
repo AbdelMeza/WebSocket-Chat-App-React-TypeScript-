@@ -7,6 +7,7 @@ import useUserData from '../Stores/userData'
 import useActivityStore from '../Stores/useUserActivity'
 import { Route, Routes, Navigate } from "react-router-dom"
 import useMessagesStore from '../Stores/useMessages'
+import AuthProtection from '../RoutesProtection/AuthProtection'
 
 const HomePage = lazy(() => import("../Pages/HomePage/HomePage"))
 const LoginPage = lazy(() => import("../Pages/AuthPages/LoginPage"))
@@ -19,7 +20,7 @@ export const avatarUrl = import.meta.env.VITE_AVATAR_URL
 function App() {
   const { theme } = useTheme()
   const { user } = useUserData()
-  const { updateUserStatus, setOnlineUsers, typingUsers, setTypingStatus } = useActivityStore()
+  const { updateUserStatus, setOnlineUsers, setTypingStatus } = useActivityStore()
   const { updateChats } = useChat()
 
   useEffect(() => {
@@ -84,7 +85,11 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<HomePage />}>
+      <Route path="/" element={
+        <AuthProtection>
+          <HomePage />
+        </AuthProtection>
+      }>
         <Route index element={<Navigate to="/inbox" replace />} />
         <Route path="inbox" element={<ConversationsOverview />}>
           <Route index element={<ConversationNeutralPage />} />

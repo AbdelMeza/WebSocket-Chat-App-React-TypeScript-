@@ -15,13 +15,35 @@
   z-index: 100;
   transition: c.$transition-1;
 
-  &.open{
+  &.open {
     opacity: 1;
     pointer-events: all;
   }
 
   [data-theme="dark"] & {
     background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.add-conv-container .selected-users-list {
+  display: flex;
+  align-items: center;
+  padding: c.$space-2 c.$space-2;
+  gap: c.$space-1;
+  overflow-x: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff1c transparent;
+
+  .selected-user {
+    display: flex;
+    align-items: center;
+    gap: c.$space-1;
+    padding: c.$space-1;
+    background-color: t.$bg-color-shade-300;
+    border-radius: c.$radius-1;
+    color: t.$text-color-shade-100;
+    cursor: pointer;
+    user-select: none;
   }
 }
 
@@ -32,19 +54,19 @@
   border: 1px solid t.$bg-color-shade-300;
   width: 500px;
 
-  .upper-content{
+  .upper-content {
     position: relative;
     @include c.flex-center;
     padding: c.$space-1 0 c.$space-2;
 
-    .upper-text{
-        color: t.$text-color-shade-100;
+    .upper-text {
+      color: t.$text-color-shade-100;
     }
 
-    .close-btn{
-        position: absolute;
-        right: 0;
-        cursor: pointer;
+    .close-btn {
+      position: absolute;
+      right: 0;
+      cursor: pointer;
     }
   }
 }
@@ -78,7 +100,7 @@
     padding: c.$space-3 0;
   }
 
-  .empty-result{
+  .empty-result {
     @include c.flex-center;
     padding: c.$space-3 0;
     color: t.$text-color-shade-300;

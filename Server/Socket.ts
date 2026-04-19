@@ -37,9 +37,9 @@ export const initSocket = (server: HttpServer): void => {
       });
     });
 
-    socket.on("user:typing", ({ chatId, receiverId }) => {
-      if (!receiverId) return;
-      socket.to(receiverId.toString()).emit("user:typing_status", {
+    socket.on("user:typing", ({ chatId, receiversIds }) => {
+      if (!receiversIds) return;
+      socket.to(receiversIds).emit("user:typing_status", {
         chatId,
         isTyping: true,
       });

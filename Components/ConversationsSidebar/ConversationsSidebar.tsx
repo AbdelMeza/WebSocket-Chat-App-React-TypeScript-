@@ -1,18 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import useElementsState from '../../Stores/useStates';
-import useUserData from '../../Stores/userData';
 import v from "../../src/StyleSheet/_variable.module.scss"
 import './ConversationsSidebar.scss';
 import { ConversationItem, ConversationItemSkeleton } from '../ConversationItem/ConversationItem';
 import useChat from '../../Stores/useChat';
+import useUserData from '../../Stores/userData';
 
 export default function ConversationsSidebar() {
     const navigate = useNavigate()
     const { user } = useUserData()
-    const { chatsLoading } = useChat()
+    const { chatsLoading, chats } = useChat()
     const { toggleAddConv } = useElementsState()
-
-    console.log(user)
 
     const openConversation = (conversationId: string) => {
         if (!conversationId) return
@@ -42,13 +40,12 @@ export default function ConversationsSidebar() {
                 <span className="header-text">Messages</span>
             </div>
             <div className="conversations-wrapper">
-                {chatsLoading ? <ConversationItemSkeleton quantity={4} /> : user !== null && user?.chats.length > 0 ? user?.chats.map((chat: any) => (
+                {chatsLoading ? <ConversationItemSkeleton quantity={4} /> : chats !== null && chats.length > 0 ? chats.map((chat: any) => (
                     <ConversationItem
                         key={chat?._id}
-                        userId={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?._id}
-                        username={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.username || "Unknown User"}
-                        fullname={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.fullname || "Unknown User"}
-                        defaultColor={(chat?.participants as any[]).find((p: any) => p._id !== user?.id)?.defaultProfileColor || "Unknown User"}
+                        participants={chat.participants}
+                        isGroup={chat.isGroup}
+                        defaultColor={chat.defaultColor}
                         onClick={() => openConversation(chat?._id)}
                         lastMessage={chat?.lastMessage?.content || <span className="no-messages">Start a conversation...</span>}
                         timestamp={chat?.lastMessage?.timestamp ? new Date(chat?.lastMessage?.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null}
