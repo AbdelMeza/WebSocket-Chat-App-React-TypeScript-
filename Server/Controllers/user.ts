@@ -42,7 +42,7 @@ export async function userData(req: Request, res: Response): Promise<void> {
       user: {
         username: user.username,
         fullname: user.fullname,
-        defaultProfile: user.defaultProfileColor,
+        defaultProfileColor: user.defaultProfileColor,
         lastSeen: user.lastSeen,
         id: user._id,
         chats: userChats?.chats || [],

@@ -68,6 +68,7 @@ const useUserData = create<UserDataState>((set) => ({
             })
 
             const data = await res.json()
+            console.log(data)
 
             if (!res.ok) {
                 set({ user: null, isAuth: false })

@@ -1,3 +1,14 @@
+@use "../../src/StyleSheet/config" as c;
+
+.profileSize-1 {
+  width: 35px;
+  height: 35px;
+}
+
+.profileSize-1 .initial{
+  font-size: c.$fontsize-1;
+}
+
 .profileSize-2 {
   width: 45px;
   height: 45px;
