@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-import './SideBar.scss'
+import './Sidebar.scss'
 import useTheme from "../../Stores/useTheme"
 import DefaultProfile from "../DefaultProfilePicture/DefaultProfilePicture"
 import useUserData from "../../Stores/userData"
